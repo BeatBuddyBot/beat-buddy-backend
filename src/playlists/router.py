@@ -1,0 +1,59 @@
+from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy.orm import Session
+
+from src.database import get_session
+from src.playlists.models import Playlist
+from src.playlists.schemas import PlaylistResponse, PlaylistCreate, PlaylistUpdate, \
+    PlaylistWithSongsResponse
+
+playlists_router = APIRouter(prefix="/playlists", tags=["playlists"])
+
+
+@playlists_router.post("/", response_model=PlaylistResponse)
+def create_playlist(playlist_data: PlaylistCreate, session: Session = Depends(get_session)):
+    playlist = Playlist(**playlist_data.model_dump())
+    session.add(playlist)
+    session.commit()
+    return playlist
+
+
+@playlists_router.get("/", response_model=list[PlaylistResponse])
+def get_playlists(session: Session = Depends(get_session)):
+    playlists = session.query(Playlist).all()
+    return playlists
+
+
+@playlists_router.get("/{playlist_id}/", response_model=PlaylistWithSongsResponse)
+def get_playlist(playlist_id: int, session: Session = Depends(get_session)):
+    playlist = session.get(Playlist, playlist_id)
+
+    if not playlist:
+        raise HTTPException(status_code=404, detail="Playlist not found")
+
+    return playlist
+
+
+@playlists_router.put("/{playlist_id}/", response_model=PlaylistResponse)
+def update_playlist(playlist_id: int, playlist_data: PlaylistUpdate, session: Session = Depends(get_session)):
+    playlist = session.get(Playlist, playlist_id)
+
+    if not playlist:
+        raise HTTPException(status_code=404, detail="Playlist not found")
+
+    for var, value in playlist_data.model_dump(exclude_unset=True).items():
+        setattr(playlist, var, value)
+
+    session.commit()
+    session.refresh(playlist)
+    return playlist
+
+
+@playlists_router.delete("/{playlist_id}/", status_code=204)
+def delete_playlist(playlist_id: int, session: Session = Depends(get_session)):
+    playlist = session.get(Playlist, playlist_id)
+
+    if not playlist:
+        raise HTTPException(status_code=404, detail="Playlist not found")
+
+    session.delete(playlist)
+    session.commit()
