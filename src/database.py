@@ -1,12 +1,8 @@
 import os
 from urllib.parse import quote_plus
 
-from dotenv import load_dotenv
-from fastapi import Depends
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-
-load_dotenv()
 
 DB_USER = os.getenv("DB_USER")
 DB_PASSWORD = quote_plus(os.getenv("DB_PASSWORD", ""))

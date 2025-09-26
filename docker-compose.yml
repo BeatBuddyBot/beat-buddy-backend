@@ -1,0 +1,38 @@
+services:
+    beat-buddy-backend:
+        build:
+            context: ./
+            dockerfile: Dockerfile
+        ports:
+            - '8000:8000'
+        restart: always
+        env_file:
+            - .env
+        depends_on:
+            postgres:
+                condition: service_healthy
+        environment:
+            - DB_HOST=postgres
+
+    postgres:
+        image: postgres:15-alpine
+        restart: always
+        ports:
+            - "5434:5432"
+        environment:
+            POSTGRES_USER: ${DB_USER}
+            POSTGRES_PASSWORD: ${DB_PASSWORD}
+            POSTGRES_DB: ${DB_NAME}
+            POSTGRES_HOST_AUTH_METHOD: trust
+        env_file: ".env"
+        volumes:
+            - postgres_data:/var/lib/postgresql/data
+        healthcheck:
+            test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
+            interval: 10s
+            timeout: 5s
+            retries: 5
+
+volumes:
+    postgres_data:
+        driver: local
