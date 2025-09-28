@@ -1,7 +1,7 @@
 import os
 from functools import cached_property
 
-from sqlalchemy import Column, Integer, String, DateTime, func
+from sqlalchemy import Column, Integer, String, DateTime, func, select
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship
 
@@ -27,3 +27,27 @@ class Playlist(Base):
         if self.cover_key:
             return f"{self.bucket_domain}/{self.cover_key}"
         return None
+    
+    @hybrid_property
+    def duration(self):
+        return sum(song.duration for song in self.songs)
+
+    @duration.expression
+    def duration(self):
+        from src.songs.models import Song
+        return select(func.coalesce(func.sum(Song.duration), 0)).where(
+            Song.playlist_id == self.id
+        ).scalar_subquery()
+
+    @hybrid_property
+    def length(self):
+        return len(self.songs)
+
+    @length.expression
+    def length(self):
+        from src.songs.models import Song
+        return (
+            select(func.count(Song.id))
+            .where(Song.playlist_id == self.id)
+            .scalar_subquery()
+        )

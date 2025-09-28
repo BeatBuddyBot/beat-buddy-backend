@@ -25,6 +25,8 @@ class PlaylistResponse(BaseModel):
     created_at: datetime
     updated_at: Optional[datetime]
     cover_url: Optional[str]
+    duration: int
+    length: int
 
 
 class PlaylistWithSongsResponse(BaseModel):
@@ -33,4 +35,7 @@ class PlaylistWithSongsResponse(BaseModel):
     description: Optional[str]
     created_at: datetime
     updated_at: Optional[datetime]
+    cover_url: Optional[str]
+    duration: int
+    length: int
     songs: list[SongResponse]

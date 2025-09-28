@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, selectinload
 
 from src.database import get_session
 from src.playlists.models import Playlist
@@ -19,13 +19,20 @@ def create_playlist(playlist_data: PlaylistCreate, session: Session = Depends(ge
 
 @playlists_router.get("/", response_model=list[PlaylistResponse])
 def get_playlists(session: Session = Depends(get_session)):
-    playlists = session.query(Playlist).all()
+    playlists = session.query(Playlist).options(
+        selectinload(Playlist.songs)
+    ).all()
     return playlists
 
 
 @playlists_router.get("/{playlist_id}/", response_model=PlaylistWithSongsResponse)
 def get_playlist(playlist_id: int, session: Session = Depends(get_session)):
-    playlist = session.get(Playlist, playlist_id)
+    playlist = (
+        session.query(Playlist)
+        .options(selectinload(Playlist.songs))
+        .filter(Playlist.id == playlist_id)
+        .first()
+    )
 
     if not playlist:
         raise HTTPException(status_code=404, detail="Playlist not found")
