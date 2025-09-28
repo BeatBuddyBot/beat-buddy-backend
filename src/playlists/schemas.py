@@ -24,6 +24,7 @@ class PlaylistResponse(BaseModel):
     description: Optional[str]
     created_at: datetime
     updated_at: Optional[datetime]
+    cover_key: Optional[str]
 
 
 class PlaylistWithSongsResponse(BaseModel):

@@ -11,7 +11,7 @@ playlists_router = APIRouter(prefix="/playlists", tags=["playlists"])
 
 @playlists_router.post("/", response_model=PlaylistResponse)
 def create_playlist(playlist_data: PlaylistCreate, session: Session = Depends(get_session)):
-    playlist = Playlist(**playlist_data.model_dump())
+    playlist = Playlist(**playlist_data.model_dump(exclude={"cover_image"}))
     session.add(playlist)
     session.commit()
     return playlist
@@ -40,7 +40,7 @@ def update_playlist(playlist_id: int, playlist_data: PlaylistUpdate, session: Se
     if not playlist:
         raise HTTPException(status_code=404, detail="Playlist not found")
 
-    for var, value in playlist_data.model_dump(exclude_unset=True).items():
+    for var, value in playlist_data.model_dump(exclude_unset=True, exclude={"cover_image"}).items():
         setattr(playlist, var, value)
 
     session.commit()
