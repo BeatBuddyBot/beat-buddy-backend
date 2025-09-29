@@ -1,7 +1,7 @@
 import os
 from functools import cached_property
 
-from sqlalchemy import Column, Integer, String, DateTime, func, select, Boolean
+from sqlalchemy import Column, Integer, String, DateTime, func, select, Boolean, text
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship
 
@@ -16,7 +16,7 @@ class Playlist(Base):
     cover_key = Column(String, nullable=True)
     created_at = Column(DateTime, server_default=func.now())
     updated_at = Column(DateTime, server_onupdate=func.utc_timestamp())
-    is_favourite = Column(Boolean, nullable=False, default=False)
+    is_favourite = Column(Boolean, nullable=False, server_default=text("false"))
     songs = relationship("Song", backref="playlist", cascade="all")
 
     @cached_property
