@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy import nulls_last
 from sqlalchemy.orm import Session, selectinload
 
 from src.database import get_session
@@ -27,6 +28,8 @@ def create_playlist(playlist_data: PlaylistCreate, session: Session = Depends(ge
 def get_playlists(session: Session = Depends(get_session)):
     playlists = session.query(Playlist).options(
         selectinload(Playlist.songs)
+    ).order_by(
+        Playlist.is_favourite.desc(), nulls_last(Playlist.updated_at.desc())
     ).all()
     return playlists
 
