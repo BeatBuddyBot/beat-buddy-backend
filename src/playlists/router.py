@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session, selectinload
 
 from src.database import get_session
 from src.playlists.models import Playlist
-from src.playlists.schemas import PlaylistResponse, PlaylistCreate, PlaylistUpdate, \
+from src.playlists.schemas import PlaylistResponse, PlaylistCreate, PlaylistPatch, \
     PlaylistWithSongsResponse
 
 playlists_router = APIRouter(prefix="/playlists", tags=["playlists"])
@@ -40,8 +40,8 @@ def get_playlist(playlist_id: int, session: Session = Depends(get_session)):
     return playlist
 
 
-@playlists_router.put("/{playlist_id}/", response_model=PlaylistResponse)
-def update_playlist(playlist_id: int, playlist_data: PlaylistUpdate, session: Session = Depends(get_session)):
+@playlists_router.patch("/{playlist_id}/", response_model=PlaylistResponse)
+def patch_playlist(playlist_id: int, playlist_data: PlaylistPatch, session: Session = Depends(get_session)):
     playlist = session.get(Playlist, playlist_id)
 
     if not playlist:

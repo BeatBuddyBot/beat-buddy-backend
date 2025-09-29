@@ -12,10 +12,11 @@ class PlaylistCreate(BaseModel):
     cover_image: Optional[str] = None
 
 
-class PlaylistUpdate(BaseModel):
+class PlaylistPatch(BaseModel):
     title: Optional[str] = None
     description: Optional[str] = None
     cover_image: Optional[str] = None
+    is_favourite: Optional[bool] = None
 
 
 class PlaylistResponse(BaseModel):
@@ -27,6 +28,7 @@ class PlaylistResponse(BaseModel):
     cover_url: Optional[str]
     duration: int
     length: int
+    is_favourite: bool
 
 
 class PlaylistWithSongsResponse(BaseModel):
@@ -38,4 +40,5 @@ class PlaylistWithSongsResponse(BaseModel):
     cover_url: Optional[str]
     duration: int
     length: int
+    is_favourite: bool
     songs: list[SongResponse]

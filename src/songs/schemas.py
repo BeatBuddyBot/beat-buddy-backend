@@ -14,6 +14,7 @@ class SongCreate(BaseModel):
 class SongResponse(BaseModel):
     id: int
     title: str
+    url: str
     created_at: datetime
     updated_at: Optional[datetime]
     position: int
