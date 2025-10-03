@@ -17,7 +17,7 @@ class Playlist(Base):
     created_at = Column(DateTime, server_default=func.now())
     updated_at = Column(DateTime)
     is_favorite = Column(Boolean, nullable=False, server_default=text("false"))
-    songs = relationship("Song", backref="playlist", cascade="all")
+    songs = relationship("Song", backref="playlist", cascade="all", order_by='Song.position')
 
     @cached_property
     def bucket_domain(self):

@@ -11,6 +11,10 @@ class SongCreate(BaseModel):
     playlist_id: int
 
 
+class SongPatch(BaseModel):
+    position: int
+
+
 class SongResponse(BaseModel):
     id: int
     title: str

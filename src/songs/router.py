@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from src.database import get_session
 from src.playlists.models import Playlist
 from src.songs.models import Song
-from src.songs.schemas import SongResponse, SongCreate
+from src.songs.schemas import SongResponse, SongCreate, SongPatch
 
 songs_router = APIRouter(prefix="/songs", tags=["songs"])
 
@@ -19,6 +19,21 @@ def create_song(song_data: SongCreate, session: Session = Depends(get_session)):
     song = Song(**song_data.model_dump())
     session.add(song)
     session.commit()
+    return song
+
+
+@songs_router.patch("/{song_id}/", response_model=SongResponse)
+def patch_song(song_id: int, song_data: SongPatch, session: Session = Depends(get_session)):
+    song = session.get(Song, song_id)
+
+    if not song:
+        raise HTTPException(status_code=404, detail="Song not found")
+
+    for var, value in song_data.model_dump().items():
+        setattr(song, var, value)
+
+    session.commit()
+    session.refresh(song)
     return song
 
 
