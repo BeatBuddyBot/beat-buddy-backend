@@ -29,7 +29,7 @@ def get_playlists(session: Session = Depends(get_session)):
     playlists = session.query(Playlist).options(
         selectinload(Playlist.songs)
     ).order_by(
-        Playlist.is_favourite.desc(), nulls_last(Playlist.updated_at.desc())
+        Playlist.is_favorite.desc(), nulls_last(Playlist.created_at.desc())
     ).all()
     return playlists
 

@@ -16,7 +16,7 @@ class PlaylistPatch(BaseModel):
     title: Optional[str] = None
     description: Optional[str] = None
     cover_image: Optional[str] = None
-    is_favourite: Optional[bool] = None
+    is_favorite: Optional[bool] = None
 
 
 class PlaylistResponse(BaseModel):
@@ -28,17 +28,8 @@ class PlaylistResponse(BaseModel):
     cover_url: Optional[str]
     duration: int
     length: int
-    is_favourite: bool
+    is_favorite: bool
 
 
-class PlaylistWithSongsResponse(BaseModel):
-    id: int
-    title: str
-    description: Optional[str]
-    created_at: datetime
-    updated_at: Optional[datetime]
-    cover_url: Optional[str]
-    duration: int
-    length: int
-    is_favourite: bool
+class PlaylistWithSongsResponse(PlaylistResponse):
     songs: list[SongResponse]
