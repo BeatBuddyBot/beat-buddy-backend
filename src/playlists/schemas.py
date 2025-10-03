@@ -7,7 +7,7 @@ from src.songs.schemas import SongResponse
 
 
 class PlaylistCreate(BaseModel):
-    title: str
+    title: Optional[str] = None
     description: Optional[str] = None
     cover_image: Optional[str] = None
 
