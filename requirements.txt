@@ -1,6 +1,7 @@
 alembic==1.16.5
 annotated-types==0.7.0
 anyio==4.11.0
+async-timeout==5.0.1
 boto3==1.40.40
 botocore==1.40.40
 certifi==2025.8.3
@@ -31,6 +32,7 @@ python-dateutil==2.9.0.post0
 python-dotenv==1.1.1
 python-multipart==0.0.20
 PyYAML==6.0.3
+redis==6.4.0
 rich==14.1.0
 rich-toolkit==0.15.1
 rignore==0.6.4
