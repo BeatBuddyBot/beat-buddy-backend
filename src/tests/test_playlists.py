@@ -2,8 +2,6 @@ from fastapi.testclient import TestClient
 from sqlalchemy.orm import Session
 
 from src.playlists.models import Playlist
-from src.tests.conftest import make_playlist
-
 
 class TestPlaylistsAPI:
 
@@ -69,7 +67,6 @@ class TestPlaylistsAPI:
         assert data["title"] == playlist.title
 
     def test_get_playlist_not_found(self, client: TestClient):
-        """Test getting a non-existent playlist."""
         response = client.get("/api/v1/playlists/999/")
 
         assert response.status_code == 404

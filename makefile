@@ -2,7 +2,7 @@
 
 
 tests:
-	python -m pytest
+	ENV=test python -m pytest
 
 run:
 	uvicorn main:app --reload

@@ -1,13 +1,17 @@
+import os
+from unittest.mock import MagicMock
+
 import pytest
 from alembic.config import Config
 from alembic import command
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from fastapi.testclient import TestClient
+
+import src.aws.client
 from src.database import get_session, TEST_DB_URL
 from main import app
 from src.playlists.models import Playlist
-
 
 @pytest.fixture(scope="function")
 def test_engine():
@@ -44,6 +48,23 @@ def client(test_session):
     with TestClient(app) as test_client:
         yield test_client
     app.dependency_overrides.clear()
+
+
+@pytest.fixture(autouse=True)
+def mock_s3_client_put(monkeypatch):
+    """
+       Automatically mocks the `put_object` method of the S3 client for tests.
+    """
+    mock_put = MagicMock()
+    monkeypatch.setattr(src.aws.client.s3_client, "put_object", mock_put)
+    yield mock_put
+
+@pytest.fixture
+def sample_image_base64():
+    os.getcwd()
+    path = "src/tests/resources/image_base64.txt"
+    with open(path, "r") as f:
+        return f.read().strip()
 
 
 @pytest.fixture
