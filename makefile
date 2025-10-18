@@ -15,3 +15,9 @@ tests:
 
 coverage:
 	ENV=test python -m pytest --cov=. --cov-report=html
+
+
+# CI
+
+ci-sort:
+	isort --check-only .
