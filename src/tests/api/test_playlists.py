@@ -9,7 +9,7 @@ class TestPlaylistsAPI:
         sample_playlist_data = {
             "title": "Test Playlist",
             "description": "A test playlist for unit testing",
-            "cover_image": sample_image_base64
+            "cover_image": sample_image_base64,
         }
         response = client.post("/api/v1/playlists/", json=sample_playlist_data)
 
@@ -46,7 +46,7 @@ class TestPlaylistsAPI:
         assert len(data) == 1
 
     def test_get_playlists_ordering(self, client, make_playlist):
-        """ Favorites first, then by created_at"""
+        """Favorites first, then by created_at"""
         playlist1 = make_playlist(title="First Playlist")
         playlist2 = make_playlist(title="Second Playlist", is_favorite=True)
         playlist3 = make_playlist(title="Third Playlist")
@@ -78,17 +78,23 @@ class TestPlaylistsAPI:
     def test_update_playlist_mark_as_favorite_success(self, client, make_playlist):
         playlist = make_playlist()
 
-        response = client.patch(f"/api/v1/playlists/{playlist.id}/", json={"is_favorite": True})
+        response = client.patch(
+            f"/api/v1/playlists/{playlist.id}/", json={"is_favorite": True}
+        )
 
         assert response.status_code == status.HTTP_200_OK
         data = response.json()
         assert data["is_favorite"] == playlist.is_favorite == True
 
-    def test_update_playlist_upload_new_cover_success(self, client, make_playlist, sample_image_base64,
-                                                      mock_s3_client_put):
+    def test_update_playlist_upload_new_cover_success(
+        self, client, make_playlist, sample_image_base64, mock_s3_client_put
+    ):
         playlist = make_playlist()
 
-        response = client.patch(f"/api/v1/playlists/{playlist.id}/", json={"cover_image": sample_image_base64})
+        response = client.patch(
+            f"/api/v1/playlists/{playlist.id}/",
+            json={"cover_image": sample_image_base64},
+        )
 
         assert response.status_code == status.HTTP_200_OK
         data = response.json()
@@ -99,13 +105,20 @@ class TestPlaylistsAPI:
 
         mock_s3_client_put.assert_called_once()
 
-    def test_update_with_same_image_generates_unique_cover_key(self, make_playlist, sample_image_base64,
-                                                               mock_s3_client_put, client):
+    def test_update_with_same_image_generates_unique_cover_key(
+        self, make_playlist, sample_image_base64, mock_s3_client_put, client
+    ):
         playlist = make_playlist()
-        first_response = client.patch(f"/api/v1/playlists/{playlist.id}/", json={"cover_image": sample_image_base64})
+        first_response = client.patch(
+            f"/api/v1/playlists/{playlist.id}/",
+            json={"cover_image": sample_image_base64},
+        )
         first_cover_url = first_response
 
-        second_response = client.patch(f"/api/v1/playlists/{playlist.id}/", json={"cover_image": sample_image_base64})
+        second_response = client.patch(
+            f"/api/v1/playlists/{playlist.id}/",
+            json={"cover_image": sample_image_base64},
+        )
         second_cover_url = second_response
 
         assert second_cover_url != first_cover_url

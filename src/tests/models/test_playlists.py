@@ -13,10 +13,7 @@ from src.playlists.utils import upload_cover
 class TestPlaylistModel:
 
     def test_playlist_model_creation(self, test_session):
-        playlist = Playlist(
-            title="Test Model Playlist",
-            description="Test description"
-        )
+        playlist = Playlist(title="Test Model Playlist", description="Test description")
 
         test_session.add(playlist)
         test_session.commit()
@@ -29,7 +26,9 @@ class TestPlaylistModel:
         assert playlist.created_at is not None
         assert playlist.cover_key is None
 
-    def test_duration_property_and_consistency_python_vs_orm(self, test_session, make_playlist, make_song):
+    def test_duration_property_and_consistency_python_vs_orm(
+        self, test_session, make_playlist, make_song
+    ):
         playlist = make_playlist()
 
         make_song(playlist, duration=100)
@@ -46,7 +45,9 @@ class TestPlaylistModel:
 
         assert python_duration == orm_duration == 450
 
-    def test_length_property_and_consistency_python_vs_orm(self, test_session, make_playlist, make_song):
+    def test_length_property_and_consistency_python_vs_orm(
+        self, test_session, make_playlist, make_song
+    ):
         playlist = make_playlist()
 
         make_song(playlist)
@@ -64,22 +65,24 @@ class TestPlaylistModel:
 
         assert python_length == orm_length == 4
 
-    def test_upload_cover_valid_base64_png(self, mock_s3_client_put, sample_image_base64):
+    def test_upload_cover_valid_base64_png(
+        self, mock_s3_client_put, sample_image_base64
+    ):
         result = upload_cover(sample_image_base64)
 
         # Verify S3 client was called
         mock_s3_client_put.assert_called_once()
 
         call_args = mock_s3_client_put.call_args
-        assert call_args[1]['Bucket'] == os.getenv('AWS_BUCKET_NAME')
-        assert call_args[1]['Key'].startswith('covers/')
-        assert call_args[1]['ContentType'] == 'image/png'
+        assert call_args[1]["Bucket"] == os.getenv("AWS_BUCKET_NAME")
+        assert call_args[1]["Key"].startswith("covers/")
+        assert call_args[1]["ContentType"] == "image/png"
 
-        assert result == call_args[1]['Key']
+        assert result == call_args[1]["Key"]
 
     def test_upload_cover_invalid_base64_format(self):
         with pytest.raises(HTTPException) as exc_info:
-            upload_cover('invalid_base64_string')
+            upload_cover("invalid_base64_string")
 
         assert exc_info.value.status_code == status.HTTP_400_BAD_REQUEST
         assert exc_info.value.detail == "Incorrect base64"

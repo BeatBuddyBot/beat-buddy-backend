@@ -4,15 +4,21 @@ from sqlalchemy.orm import Session, selectinload
 
 from src.database import get_session
 from src.playlists.models import Playlist
-from src.playlists.schemas import (PlaylistCreate, PlaylistPatch,
-                                   PlaylistResponse, PlaylistWithSongsResponse)
+from src.playlists.schemas import (
+    PlaylistCreate,
+    PlaylistPatch,
+    PlaylistResponse,
+    PlaylistWithSongsResponse,
+)
 from src.playlists.utils import upload_cover
 
 playlists_router = APIRouter(prefix="/playlists", tags=["playlists"])
 
 
 @playlists_router.post("/", response_model=PlaylistResponse)
-def create_playlist(playlist_data: PlaylistCreate, session: Session = Depends(get_session)):
+def create_playlist(
+    playlist_data: PlaylistCreate, session: Session = Depends(get_session)
+):
     playlist = Playlist(**playlist_data.model_dump(exclude={"cover_image"}))
 
     if playlist_data.cover_image:
@@ -26,11 +32,12 @@ def create_playlist(playlist_data: PlaylistCreate, session: Session = Depends(ge
 
 @playlists_router.get("/", response_model=list[PlaylistResponse])
 def get_playlists(session: Session = Depends(get_session)):
-    playlists = session.query(Playlist).options(
-        selectinload(Playlist.songs)
-    ).order_by(
-        Playlist.is_favorite.desc(), nulls_last(Playlist.created_at.desc())
-    ).all()
+    playlists = (
+        session.query(Playlist)
+        .options(selectinload(Playlist.songs))
+        .order_by(Playlist.is_favorite.desc(), nulls_last(Playlist.created_at.desc()))
+        .all()
+    )
     return playlists
 
 
@@ -50,13 +57,19 @@ def get_playlist(playlist_id: int, session: Session = Depends(get_session)):
 
 
 @playlists_router.patch("/{playlist_id}/", response_model=PlaylistResponse)
-def patch_playlist(playlist_id: int, playlist_data: PlaylistPatch, session: Session = Depends(get_session)):
+def patch_playlist(
+    playlist_id: int,
+    playlist_data: PlaylistPatch,
+    session: Session = Depends(get_session),
+):
     playlist = session.get(Playlist, playlist_id)
 
     if not playlist:
         raise HTTPException(status_code=404, detail="Playlist not found")
 
-    for var, value in playlist_data.model_dump(exclude_unset=True, exclude={"cover_image"}).items():
+    for var, value in playlist_data.model_dump(
+        exclude_unset=True, exclude={"cover_image"}
+    ).items():
         setattr(playlist, var, value)
 
     if playlist_data.cover_image:
