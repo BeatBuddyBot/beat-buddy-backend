@@ -1,4 +1,4 @@
-name: Check Imports
+name: Code Style Check
 
 on:
   pull_request:
@@ -6,7 +6,7 @@ on:
       - master
 
 jobs:
-  isort:
+  format:
     runs-on: ubuntu-latest
 
     steps:
@@ -24,4 +24,4 @@ jobs:
         pip install -r requirements.txt
 
     - name: Run isort via Makefile
-      run: make ci-sort
+      run: make ci-format
