@@ -2,16 +2,18 @@ import os
 from unittest.mock import MagicMock
 
 import pytest
-from alembic.config import Config
-from alembic import command
+from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from fastapi.testclient import TestClient
 
 import src.aws.client
-from src.database import get_session, TEST_DB_URL
+from alembic import command
+from alembic.config import Config
 from main import app
+from src.database import TEST_DB_URL, get_session
 from src.playlists.models import Playlist
+from src.songs.models import Song
+
 
 @pytest.fixture(scope="function")
 def test_engine():
@@ -59,6 +61,7 @@ def mock_s3_client_put(monkeypatch):
     monkeypatch.setattr(src.aws.client.s3_client, "put_object", mock_put)
     yield mock_put
 
+
 @pytest.fixture
 def sample_image_base64():
     os.getcwd()
@@ -69,11 +72,13 @@ def sample_image_base64():
 
 @pytest.fixture
 def make_playlist(test_session):
-    def _make_playlist(title="Test Playlist", description="A test playlist", is_favorite=False):
+    def _make_playlist(title="Test Playlist", description="A test playlist", is_favorite=False, **kwargs):
         playlist = Playlist(
-            title=title,
-            description=description,
-            is_favorite=is_favorite
+            **{
+             'title': title,
+             'description': description,
+             'is_favorite': is_favorite
+            } | kwargs
         )
         test_session.add(playlist)
         test_session.commit()
@@ -81,3 +86,25 @@ def make_playlist(test_session):
         return playlist
 
     return _make_playlist
+
+
+@pytest.fixture
+def make_song(test_session, make_playlist):
+    def _make_song(playlist=None, **kwargs):
+        if playlist is None:
+            playlist = make_playlist()
+
+        song = Song(
+            **{
+                  'playlist': playlist,
+                  'title': 'Caravan Palace - Lone Digger (Official MV)',
+                  'url': 'https://youtu.be/UbQgXeY_zi4',
+                  'duration': 170,
+              } | kwargs
+        )
+        test_session.add(song)
+        test_session.commit()
+        test_session.refresh(song)
+        return song
+
+    return _make_song

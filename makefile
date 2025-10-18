@@ -1,4 +1,4 @@
-.PHONY: tests run
+.PHONY: tests run sort
 
 
 tests:
@@ -6,3 +6,6 @@ tests:
 
 run:
 	uvicorn main:app --reload
+
+sort:
+	isort .

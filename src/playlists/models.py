@@ -1,7 +1,8 @@
 import os
 from functools import cached_property
 
-from sqlalchemy import Column, Integer, String, DateTime, func, select, Boolean, text
+from sqlalchemy import (Boolean, Column, DateTime, Integer, String, func,
+                        select, text)
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship
 

@@ -1,4 +1,5 @@
-from sqlalchemy import Column, Integer, String, DateTime, func, ForeignKey, event, select
+from sqlalchemy import (Column, DateTime, ForeignKey, Integer, String, event,
+                        func, select)
 
 from src.models import Base
 
