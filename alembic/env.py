@@ -4,8 +4,8 @@ from sqlalchemy import engine_from_config, pool
 
 from alembic import context
 from src.database import DB_URL
-from src.playlists.models import Playlist
 from src.models import Base
+from src.playlists.models import Playlist
 from src.songs.models import Song
 
 # this is the Alembic Config object, which provides
