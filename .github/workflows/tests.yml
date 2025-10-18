@@ -25,7 +25,11 @@ jobs:
           --health-retries=5
 
     env:
-      DATABASE_URL: postgresql://test:test@localhost:5432/test_db
+      DB_USER: test
+      DB_PASSWORD: test
+      DB_HOST: localhost
+      DB_PORT: 5432
+      TEST_DB_NAME: test_db # TODO: later change to DB_NAME
       ENV: test
 
     steps:
