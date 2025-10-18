@@ -17,7 +17,7 @@ black:
 	black --exclude  $(BLACK_EXCLUDE) .
 
 .PHONY: format
-format: black sort
+format: sort black
 
 
 .PHONY: tests
