@@ -1,10 +1,10 @@
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from src.database import get_session
 from src.playlists.models import Playlist
 from src.songs.models import Song
-from src.songs.schemas import SongResponse, SongCreate, SongPatch
+from src.songs.schemas import SongCreate, SongPatch, SongResponse
 
 songs_router = APIRouter(prefix="/songs", tags=["songs"])
 
