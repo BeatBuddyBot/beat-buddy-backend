@@ -4,8 +4,12 @@ from sqlalchemy.orm import Session, selectinload
 
 from src.database import get_session
 from src.playlists.models import Playlist
-from src.playlists.schemas import (PlaylistCreate, PlaylistPatch,
-                                   PlaylistResponse, PlaylistWithSongsResponse)
+from src.playlists.schemas import (
+    PlaylistCreate,
+    PlaylistPatch,
+    PlaylistResponse,
+    PlaylistWithSongsResponse,
+)
 from src.playlists.utils import upload_cover
 
 playlists_router = APIRouter(prefix="/playlists", tags=["playlists"])

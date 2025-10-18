@@ -1,5 +1,13 @@
-from sqlalchemy import (Column, DateTime, ForeignKey, Integer, String, event,
-                        func, select)
+from sqlalchemy import (
+    Column,
+    DateTime,
+    ForeignKey,
+    Integer,
+    String,
+    event,
+    func,
+    select,
+)
 
 from src.models import Base
 
