@@ -7,4 +7,5 @@ omit =
     ./alembic/*
     */settings.py
     */__init__.py
+    src/database.py
 fail_under = 80

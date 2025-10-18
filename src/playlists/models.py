@@ -1,5 +1,5 @@
 import os
-from functools import cached_property
+from functools import cache
 
 from sqlalchemy import (Boolean, Column, DateTime, Integer, String, func,
                         select, text)
@@ -20,14 +20,15 @@ class Playlist(Base):
     is_favorite = Column(Boolean, nullable=False, server_default=text("false"))
     songs = relationship("Song", backref="playlist", cascade="all", order_by='Song.position')
 
-    @cached_property
-    def bucket_domain(self):
+    @classmethod
+    @cache
+    def bucket_domain(cls):
         return f"https://{os.getenv('AWS_BUCKET_NAME')}.s3.{os.getenv('AWS_REGION_NAME')}.amazonaws.com"
 
     @hybrid_property
     def cover_url(self):
         if self.cover_key:
-            return f"{self.bucket_domain}/{self.cover_key}"
+            return f"{self.bucket_domain()}/{self.cover_key}"
         return None
     
     @hybrid_property
