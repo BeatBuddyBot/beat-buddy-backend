@@ -10,7 +10,7 @@ class TestSongsAPI:
             "url": "https://youtu.be/UbQgXeY_zi4",
             "title": "Caravan Palace - Lone Digger (Official MV)",
             "duration": 170,
-            "playlist_id": playlist.id
+            "playlist_id": playlist.id,
         }
 
         response = client.post("/api/v1/songs/", json=song_data)
@@ -39,7 +39,7 @@ class TestSongsAPI:
             "url": "https://youtu.be/UbQgXeY_zi4",
             "title": "Caravan Palace - Lone Digger (Official MV)",
             "duration": 170,
-            "playlist_id": 999  # Non-existent playlist
+            "playlist_id": 999,  # Non-existent playlist
         }
 
         response = client.post("/api/v1/songs/", json=song_data)

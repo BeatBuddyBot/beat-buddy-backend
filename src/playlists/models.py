@@ -17,7 +17,9 @@ class Playlist(Base):
     created_at = Column(DateTime, server_default=func.now())
     updated_at = Column(DateTime)
     is_favorite = Column(Boolean, nullable=False, server_default=text("false"))
-    songs = relationship("Song", backref="playlist", cascade="all", order_by='Song.position')
+    songs = relationship(
+        "Song", backref="playlist", cascade="all", order_by="Song.position"
+    )
 
     @classmethod
     @cache
@@ -29,7 +31,7 @@ class Playlist(Base):
         if self.cover_key:
             return f"{self.bucket_domain()}/{self.cover_key}"
         return None
-    
+
     @hybrid_property
     def duration(self):
         return sum(song.duration for song in self.songs)
@@ -37,9 +39,12 @@ class Playlist(Base):
     @duration.expression
     def duration(self):
         from src.songs.models import Song
-        return select(func.coalesce(func.sum(Song.duration), 0)).where(
-            Song.playlist_id == self.id
-        ).scalar_subquery()
+
+        return (
+            select(func.coalesce(func.sum(Song.duration), 0))
+            .where(Song.playlist_id == self.id)
+            .scalar_subquery()
+        )
 
     @hybrid_property
     def length(self):
@@ -48,6 +53,7 @@ class Playlist(Base):
     @length.expression
     def length(self):
         from src.songs.models import Song
+
         return (
             select(func.count(Song.id))
             .where(Song.playlist_id == self.id)

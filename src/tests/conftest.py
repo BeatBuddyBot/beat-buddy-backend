@@ -30,7 +30,9 @@ def test_engine():
 
 @pytest.fixture(scope="function")
 def test_session(test_engine):
-    TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=test_engine)
+    TestingSessionLocal = sessionmaker(
+        autocommit=False, autoflush=False, bind=test_engine
+    )
     session = TestingSessionLocal()
     try:
         yield session
@@ -55,7 +57,7 @@ def client(test_session):
 @pytest.fixture(autouse=True)
 def mock_s3_client_put(monkeypatch):
     """
-       Automatically mocks the `put_object` method of the S3 client for tests.
+    Automatically mocks the `put_object` method of the S3 client for tests.
     """
     mock_put = MagicMock()
     monkeypatch.setattr(src.aws.client.s3_client, "put_object", mock_put)
@@ -72,13 +74,15 @@ def sample_image_base64():
 
 @pytest.fixture
 def make_playlist(test_session):
-    def _make_playlist(title="Test Playlist", description="A test playlist", is_favorite=False, **kwargs):
+    def _make_playlist(
+        title="Test Playlist",
+        description="A test playlist",
+        is_favorite=False,
+        **kwargs
+    ):
         playlist = Playlist(
-            **{
-             'title': title,
-             'description': description,
-             'is_favorite': is_favorite
-            } | kwargs
+            **{"title": title, "description": description, "is_favorite": is_favorite}
+            | kwargs
         )
         test_session.add(playlist)
         test_session.commit()
@@ -96,11 +100,12 @@ def make_song(test_session, make_playlist):
 
         song = Song(
             **{
-                  'playlist': playlist,
-                  'title': 'Caravan Palace - Lone Digger (Official MV)',
-                  'url': 'https://youtu.be/UbQgXeY_zi4',
-                  'duration': 170,
-              } | kwargs
+                "playlist": playlist,
+                "title": "Caravan Palace - Lone Digger (Official MV)",
+                "url": "https://youtu.be/UbQgXeY_zi4",
+                "duration": 170,
+            }
+            | kwargs
         )
         test_session.add(song)
         test_session.commit()

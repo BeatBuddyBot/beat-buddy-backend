@@ -10,7 +10,7 @@ class TestSongModel:
             url="https://youtu.be/UbQgXeY_zi4",
             title="Caravan Palace - Lone Digger (Official MV)",
             duration=170,
-            playlist_id=playlist.id
+            playlist_id=playlist.id,
         )
 
         test_session.add(song)
@@ -25,7 +25,9 @@ class TestSongModel:
         assert song.playlist_id == playlist.id
         assert song.created_at is not None
 
-    def test_song_position_auto_assignment_with_manual_position(self, test_session, make_playlist):
+    def test_song_position_auto_assignment_with_manual_position(
+        self, test_session, make_playlist
+    ):
         """Test that manually set position is preserved"""
         playlist = make_playlist(title="Test Playlist")
 
@@ -34,7 +36,7 @@ class TestSongModel:
             title="Caravan Palace - Lone Digger (Official MV)",
             duration=170,
             position=5,  # Manually set position
-            playlist_id=playlist.id
+            playlist_id=playlist.id,
         )
 
         test_session.add(song)

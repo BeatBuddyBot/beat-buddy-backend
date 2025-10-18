@@ -23,7 +23,9 @@ def create_song(song_data: SongCreate, session: Session = Depends(get_session)):
 
 
 @songs_router.patch("/{song_id}/", response_model=SongResponse)
-def patch_song(song_id: int, song_data: SongPatch, session: Session = Depends(get_session)):
+def patch_song(
+    song_id: int, song_data: SongPatch, session: Session = Depends(get_session)
+):
     song = session.get(Song, song_id)
 
     if not song:
