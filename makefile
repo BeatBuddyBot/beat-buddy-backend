@@ -41,4 +41,4 @@ ci-format: ci-sort ci-black
 
 .PHONY: ci-coverage
 ci-coverage:
-	ENV=test python -m pytest --cov=.
+	ENV=test python -m pytest   --junitxml=pytest.xml --cov-report=term-missing:skip-covered --cov=.  | tee pytest-coverage.txt
