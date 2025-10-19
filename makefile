@@ -38,3 +38,7 @@ ci-black:
 
 .PHONY: ci-format
 ci-format: ci-sort ci-black
+
+.PHONY: ci-coverage
+ci-coverage:
+	ENV=test python -m pytest --cov=.
