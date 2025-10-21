@@ -1,9 +1,7 @@
 import os
-from unittest.mock import patch
 
 import pytest
 from fastapi import HTTPException
-from psycopg2.errors import CheckViolation
 from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 from starlette import status
