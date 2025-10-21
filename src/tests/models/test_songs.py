@@ -1,3 +1,6 @@
+import pytest
+from sqlalchemy.exc import IntegrityError
+
 from src.songs.models import Song
 
 
@@ -51,3 +54,11 @@ class TestSongModel:
         song2 = make_song(playlist=playlist)
         assert song1.position == 0
         assert song2.position == 1
+
+    def test_duration_cant_be_negative(self, make_song):
+        # Ok
+        make_song(duration=0)
+        make_song(duration=1)
+        # Fail
+        with pytest.raises(IntegrityError):
+            make_song(duration=-1)

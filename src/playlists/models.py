@@ -11,8 +11,8 @@ from src.models import Base
 class Playlist(Base):
     __tablename__ = "playlists"
     id = Column(Integer, primary_key=True)
-    title = Column(String, nullable=False)
-    description = Column(String, nullable=True)
+    title = Column(String(70), nullable=False)
+    description = Column(String(500), nullable=True)
     cover_key = Column(String, nullable=True)
     created_at = Column(DateTime, server_default=func.now())
     updated_at = Column(DateTime)
