@@ -1,9 +1,9 @@
 import os
-from unittest.mock import patch
 
 import pytest
 from fastapi import HTTPException
 from sqlalchemy import select
+from sqlalchemy.exc import IntegrityError
 from starlette import status
 
 from src.playlists.models import Playlist
@@ -92,3 +92,17 @@ class TestPlaylistModel:
 
         assert playlist.cover_key is None
         assert playlist.cover_url is None
+
+    def test_title_max_length(self, make_playlist):
+        # Ok
+        make_playlist(title="_" * 70)
+        # Fail
+        with pytest.raises(IntegrityError):
+            make_playlist(title="_" * 71)
+
+    def test_description_max_length(self, make_playlist):
+        # Ok
+        make_playlist(description="_" * 500)
+        # Fail
+        with pytest.raises(IntegrityError):
+            make_playlist(description="_" * 501)
