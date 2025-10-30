@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy import nulls_last
 from sqlalchemy.orm import Session, selectinload
+from starlette import status
 
 from src.database import get_session
 from src.playlists.models import Playlist
@@ -15,7 +16,9 @@ from src.playlists.utils import upload_cover
 playlists_router = APIRouter(prefix="/playlists", tags=["playlists"])
 
 
-@playlists_router.post("/", response_model=PlaylistResponse)
+@playlists_router.post(
+    "/", response_model=PlaylistResponse, status_code=status.HTTP_201_CREATED
+)
 def create_playlist(
     playlist_data: PlaylistCreate, session: Session = Depends(get_session)
 ):
@@ -51,7 +54,9 @@ def get_playlist(playlist_id: int, session: Session = Depends(get_session)):
     )
 
     if not playlist:
-        raise HTTPException(status_code=404, detail="Playlist not found")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Playlist not found"
+        )
 
     return playlist
 
@@ -65,7 +70,9 @@ def patch_playlist(
     playlist = session.get(Playlist, playlist_id)
 
     if not playlist:
-        raise HTTPException(status_code=404, detail="Playlist not found")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Playlist not found"
+        )
 
     for var, value in playlist_data.model_dump(
         exclude_unset=True, exclude={"cover_image"}
@@ -81,12 +88,14 @@ def patch_playlist(
     return playlist
 
 
-@playlists_router.delete("/{playlist_id}/", status_code=204)
+@playlists_router.delete("/{playlist_id}/", status_code=status.HTTP_204_NO_CONTENT)
 def delete_playlist(playlist_id: int, session: Session = Depends(get_session)):
     playlist = session.get(Playlist, playlist_id)
 
     if not playlist:
-        raise HTTPException(status_code=404, detail="Playlist not found")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Playlist not found"
+        )
 
     session.delete(playlist)
     session.commit()

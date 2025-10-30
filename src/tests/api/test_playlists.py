@@ -13,7 +13,7 @@ class TestPlaylistsAPI:
         }
         response = client.post("/api/v1/playlists/", json=sample_playlist_data)
 
-        assert response.status_code == status.HTTP_200_OK
+        assert response.status_code == status.HTTP_201_CREATED
         data = response.json()
 
         assert data["title"] == sample_playlist_data["title"]
@@ -31,7 +31,7 @@ class TestPlaylistsAPI:
         minimal_data = {}
         response = client.post("/api/v1/playlists/", json=minimal_data)
 
-        assert response.status_code == status.HTTP_200_OK
+        assert response.status_code == status.HTTP_201_CREATED
         data = response.json()
         assert data["title"] == "New Playlist #1"
         assert data["cover_url"] is None
