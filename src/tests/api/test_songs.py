@@ -15,7 +15,7 @@ class TestSongsAPI:
 
         response = client.post("/api/v1/songs/", json=song_data)
 
-        assert response.status_code == status.HTTP_200_OK
+        assert response.status_code == status.HTTP_201_CREATED
         data = response.json()
 
         assert data["title"] == song_data["title"]
