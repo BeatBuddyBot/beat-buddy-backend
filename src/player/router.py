@@ -5,7 +5,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from src.database import get_session
-from src.player.schemas import PlayerAddSong, PlayerAddPlaylist
+from src.player.schemas import PlayerAddPlaylist, PlayerAddSong
 from src.player.utils import redis_client
 from src.songs.models import Song
 

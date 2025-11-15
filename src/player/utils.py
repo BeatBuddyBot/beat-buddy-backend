@@ -1,3 +1,3 @@
 import redis
 
-redis_client = redis.Redis('host.docker.internal')
+redis_client = redis.Redis("host.docker.internal")
