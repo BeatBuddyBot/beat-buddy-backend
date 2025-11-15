@@ -1,10 +1,21 @@
-from sqlalchemy import Column, Integer, String, DateTime, func, ForeignKey, event, select
+from sqlalchemy import (
+    CheckConstraint,
+    Column,
+    DateTime,
+    ForeignKey,
+    Integer,
+    String,
+    event,
+    func,
+    select,
+)
 
 from src.models import Base
 
 
 class Song(Base):
     __tablename__ = "songs"
+    __table_args__ = (CheckConstraint("duration >= 0", name="duration_non_negative"),)
     id = Column(Integer, primary_key=True)
     url = Column(String, nullable=False)
     title = Column(String, nullable=False)
