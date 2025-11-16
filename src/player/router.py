@@ -17,7 +17,37 @@ player_router = APIRouter(prefix="/player", tags=["player"])
 async def status_stream(websocket: WebSocket):
     await websocket.accept()
     while True:
-        await websocket.send_text("message")
+        mock = {
+            "is_playing": True,
+            "player": {
+                "paused": False,
+                "repeat": "disabled",
+                "current_song": {
+                    "title": "УННВ - Без даты (Remix)",
+                    "duration": 240000,
+                    "elapsed": 120000
+                }
+            },
+            "queue": [
+                {
+                    "title": "голубые глазки",
+                    "duration": "180000"
+                },
+                {
+                    "title": "киси-киси мяу-мяу",
+                    "duration": "180000"
+                },
+                {
+                    "title": "GHOST! - phonk.me & KIIXSHI",
+                    "duration": "200000"
+                },
+                {
+                    "title": "Microwave Edit Song (Slowed)",
+                    "duration": "150000"
+                }
+            ]
+        }
+        await websocket.send_json(mock)
         await asyncio.sleep(1)
 
 
@@ -31,7 +61,7 @@ def start_song(song_data: PlayerStartSong):
 
 @player_router.post("/start/playlist", status_code=204)
 def start_playlist(
-    playlist_data: PlayerStartPlaylist, session: Session = Depends(get_session)
+        playlist_data: PlayerStartPlaylist, session: Session = Depends(get_session)
 ):
     query = (
         select(Song.url)
