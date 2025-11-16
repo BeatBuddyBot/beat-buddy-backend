@@ -16,7 +16,13 @@ player_router = APIRouter(prefix="/player", tags=["player"])
 @player_router.websocket("/status_stream")
 async def status_stream(websocket: WebSocket):
     await websocket.accept()
+
+    duration = 240000
+    elapsed = 0
+
     while True:
+        progress = int((elapsed / duration) * 100)
+
         mock = {
             "is_playing": True,
             "player": {
@@ -24,8 +30,9 @@ async def status_stream(websocket: WebSocket):
                 "repeat": "disabled",
                 "current_song": {
                     "title": "УННВ - Без даты (Remix)",
-                    "duration": 240000,
-                    "elapsed": 120000,
+                    "duration": duration,
+                    "elapsed": elapsed,
+                    "progress": progress,
                 },
             },
             "queue": [
@@ -35,8 +42,14 @@ async def status_stream(websocket: WebSocket):
                 {"title": "Microwave Edit Song (Slowed)", "duration": "150000"},
             ],
         }
+
         await websocket.send_json(mock)
+
         await asyncio.sleep(1)
+        elapsed += 1000
+
+        if elapsed > duration:
+            elapsed = 0
 
 
 @player_router.post("/start/song", status_code=204)
