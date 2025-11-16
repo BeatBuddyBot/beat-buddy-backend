@@ -44,7 +44,7 @@ def get_playlists(session: Session = Depends(get_session)):
     return playlists
 
 
-@playlists_router.get("/{playlist_id}/", response_model=PlaylistWithSongsResponse)
+@playlists_router.get("/{playlist_id}", response_model=PlaylistWithSongsResponse)
 def get_playlist(playlist_id: int, session: Session = Depends(get_session)):
     playlist = (
         session.query(Playlist)
@@ -61,7 +61,7 @@ def get_playlist(playlist_id: int, session: Session = Depends(get_session)):
     return playlist
 
 
-@playlists_router.patch("/{playlist_id}/", response_model=PlaylistResponse)
+@playlists_router.patch("/{playlist_id}", response_model=PlaylistResponse)
 def patch_playlist(
     playlist_id: int,
     playlist_data: PlaylistPatch,
@@ -88,7 +88,7 @@ def patch_playlist(
     return playlist
 
 
-@playlists_router.delete("/{playlist_id}/", status_code=status.HTTP_204_NO_CONTENT)
+@playlists_router.delete("/{playlist_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_playlist(playlist_id: int, session: Session = Depends(get_session)):
     playlist = session.get(Playlist, playlist_id)
 
